@@ -1,7 +1,5 @@
 package no.hvl.dat100.oppgave1;
 
-import no.hvl.dat100.common.TODO;
-
 public abstract class Innlegg {
 	
 	private int id;
@@ -67,8 +65,21 @@ public abstract class Innlegg {
 	
 	// Metoden nedenfor er kun for valgfri oppgave 6
 	public String toHTML() {
-		
-		throw new UnsupportedOperationException(TODO.method());
-				
+		return toHTMLHeader();
+	}
+
+	protected String toHTMLHeader() {
+		return "<h2>" + htmlEscape(bruker) + "@" + htmlEscape(dato) + " [" + likes + "]<h2>\n";
+	}
+
+	protected static String htmlEscape(String verdi) {
+		if (verdi == null) {
+			return "";
+		}
+		return verdi.replace("&", "&amp;")
+				.replace("<", "&lt;")
+				.replace(">", "&gt;")
+				.replace("\"", "&quot;")
+				.replace("'", "&#39;");
 	}
 }
