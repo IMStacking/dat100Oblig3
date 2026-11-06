@@ -1,7 +1,10 @@
 package no.hvl.dat100.oppgave3;
 
-import no.hvl.dat100.common.TODO;
-import no.hvl.dat100.oppgave1.*;
+import no.hvl.dat100.oppgave1.Innlegg;
+import no.hvl.dat100.oppgave2.Tekst;
+
+import java.util.Arrays;
+import java.util.Objects;
 
 public class Blogg {
 
@@ -43,7 +46,7 @@ public class Blogg {
 	}
 	
 	public boolean leggTil(Innlegg innlegg) {
-		if (!ledigPlass() || finnes(innlegg)) {
+		if (innlegg == null || !ledigPlass() || finnes(innlegg)) {
 			return false;
 		}
 		innleggtabell[nesteledig] = innlegg;
@@ -62,23 +65,56 @@ public class Blogg {
 	// valgfrie oppgaver nedenfor
 	
 	public void utvid() {
-		throw new UnsupportedOperationException(TODO.method());
+		int nyLengde = innleggtabell.length == 0 ? 1 : innleggtabell.length * 2;
+		innleggtabell = Arrays.copyOf(innleggtabell, nyLengde);
 	}
 	
 	public boolean leggTilUtvid(Innlegg innlegg) {
-
-		throw new UnsupportedOperationException(TODO.method());
-		
+		if (innlegg == null || finnes(innlegg)) {
+			return false;
+		}
+		if (!ledigPlass()) {
+			utvid();
+		}
+		innleggtabell[nesteledig++] = innlegg;
+		return true;
 	}
 	
 	public boolean slett(Innlegg innlegg) {
-		
-		throw new UnsupportedOperationException(TODO.method());
+		int indeks = finnInnlegg(innlegg);
+		if (indeks < 0) {
+			return false;
+		}
+		for (int i = indeks; i < nesteledig - 1; i++) {
+			innleggtabell[i] = innleggtabell[i + 1];
+		}
+		innleggtabell[--nesteledig] = null;
+		return true;
 	}
 	
 	public int[] search(String keyword) {
-		
-		throw new UnsupportedOperationException(TODO.method());
+		return finnTekstTreff(null, keyword, false);
+	}
 
+	public int[] search(String user, String ord) {
+		return finnTekstTreff(user, ord, true);
+	}
+
+	private int[] finnTekstTreff(String user, String ord, boolean filtrerBruker) {
+		if (ord == null) {
+			return new int[0];
+		}
+		int[] treff = new int[nesteledig];
+		int antallTreff = 0;
+		for (int i = 0; i < nesteledig; i++) {
+			Innlegg innlegg = innleggtabell[i];
+			if (innlegg instanceof Tekst tekstInnlegg
+					&& (!filtrerBruker || Objects.equals(user, innlegg.getBruker()))
+					&& tekstInnlegg.getTekst() != null
+					&& tekstInnlegg.getTekst().contains(ord)) {
+				treff[antallTreff++] = innlegg.getId();
+			}
+		}
+		return Arrays.copyOf(treff, antallTreff);
 	}
 }

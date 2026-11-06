@@ -1,7 +1,5 @@
 package no.hvl.dat100.oppgave2;
 
-import no.hvl.dat100.common.TODO;
-
 public class Bilde extends Tekst {
 
 	private String url;
@@ -32,8 +30,7 @@ public class Bilde extends Tekst {
 
 	// Metoden nedenfor er kun for valgfri oppgave 6
 	public String toHTML() {
-		
-		throw new UnsupportedOperationException(TODO.method());
-				
+		return toHTMLHeader() + "<p>" + htmlEscape(getTekst()) + "<p>\n<iframe src=\"" + htmlEscape(url)
+				+ "\" height=600 width=800></iframe><hr>\n";
 	}
 }
